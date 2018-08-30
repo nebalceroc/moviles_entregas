@@ -85,10 +85,9 @@ public class TicTacToeActivity extends AppCompatActivity {
             mInfoTextView.setText(R.string.turn_computer);
             int move = mGame.getComputerMove();
             setMove(TicTacToeGame.COMPUTER_PLAYER, move);
-            mInfoTextView.setText(R.string.first_human);
-        }else{
-            mInfoTextView.setText(R.string.turn_human);
+
         }
+        mInfoTextView.setText(R.string.turn_human);
     }
 
     private class ButtonClickListener implements View.OnClickListener {
