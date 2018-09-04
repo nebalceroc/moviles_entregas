@@ -13,3 +13,6 @@ Cada carpeta corresponde a una entrega o reto especifico.
 
  - Reto 3: TicTacToe
  (https://github.com/nebalceroc/moviles_entregas/tree/master/Reto3_TicTacToe)
+
+ - Reto 4: TicTacToePlus
+ (https://github.com/nebalceroc/moviles_entregas/tree/master/Reto4_TicTacToePlus)
