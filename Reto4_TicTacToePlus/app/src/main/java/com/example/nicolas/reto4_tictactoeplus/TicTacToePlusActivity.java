@@ -135,10 +135,13 @@ public class TicTacToePlusActivity extends AppCompatActivity {
                 return true;
             case R.id.ai_difficulty:
                 showDialog(DIALOG_DIFFICULTY_ID);
+                return true;
             case R.id.quit:
                 showDialog(DIALOG_QUIT_ID);
+                return true;
             case R.id.about:
                 showDialog(DIALOG_ABOUT_ID);
+                return true;
         }
         return true;
     }
