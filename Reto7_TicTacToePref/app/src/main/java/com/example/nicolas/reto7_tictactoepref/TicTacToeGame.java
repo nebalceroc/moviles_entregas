@@ -1,6 +1,4 @@
-package com.example.nicolas.reto6_tictactoeorientationsave;
-
-import android.util.Log;
+package com.example.nicolas.reto7_tictactoepref;
 
 import java.util.Random;
 

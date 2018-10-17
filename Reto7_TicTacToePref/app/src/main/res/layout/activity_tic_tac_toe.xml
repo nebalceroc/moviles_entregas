@@ -33,7 +33,7 @@
             android:paddingLeft="10dp"
             android:textColor="@color/colorPrimaryDark"
             android:freezesText="true"/>
-        <com.example.nicolas.reto6_tictactoeorientationsave.BoardView
+        <com.example.nicolas.reto7_tictactoepref.BoardView
             android:id="@+id/board"
             android:layout_width="300dp"
             android:layout_height="300dp"
