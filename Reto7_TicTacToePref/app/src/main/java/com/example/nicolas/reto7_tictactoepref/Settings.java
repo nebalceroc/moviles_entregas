@@ -9,10 +9,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.skydoves.colorpickerpreference.ColorEnvelope;
-import com.skydoves.colorpickerpreference.ColorListener;
-import com.skydoves.colorpickerpreference.ColorPickerDialog;
-import com.skydoves.colorpickerpreference.ColorPickerPreference;
+import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 public class Settings extends PreferenceActivity{
 
@@ -53,17 +50,19 @@ public class Settings extends PreferenceActivity{
         });
 
         final ColorPickerPreference colorPickerPreference = (ColorPickerPreference) findPreference("color");
-        colorPickerPreference.setSummary((CharSequence) "#000000");
-        colorPickerPreference.getColorPickerDialogBuilder().setOnColorListener(new ColorListener() {
+        String colorMessage = String.valueOf(prefs.getInt("color",0));
+        colorPickerPreference.setSummary((CharSequence) colorMessage);
+        colorPickerPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
-            public void onColorSelected(ColorEnvelope colorEnvelope) {
-                Log.e("CD",colorEnvelope.toString());
-                colorPickerPreference.setSummary((CharSequence) colorEnvelope.getColorHtml());
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                colorPickerPreference.setSummary((CharSequence) newValue.toString());
                 SharedPreferences.Editor ed = prefs.edit();
-                ed.putString("color", colorEnvelope.getColorHtml());
+                ed.putInt("color", (int) newValue);
                 ed.commit();
+                return true;
             }
         });
+
     }
 
 }

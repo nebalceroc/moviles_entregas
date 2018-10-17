@@ -21,15 +21,22 @@
         android:entries="@array/list_difficulty_level"
         android:entryValues="@array/list_difficulty_level" />
 
-    <com.skydoves.colorpickerpreference.ColorPickerPreference
+    <!--<com.skydoves.colorpickerpreference.ColorPickerPreference-->
+        <!--android:key="color2"-->
+        <!--android:title="Toolbar Color"-->
+        <!--android:summary="changes toolbar color"-->
+        <!--app:preference_dialog_title="Toolbar ColorPickerDialog"-->
+        <!--app:preference_dialog_positive="Confirm"-->
+        <!--app:preference_dialog_negative="Cancel"-->
+        <!--app:preference_palette="@drawable/palette"-->
+        <!--app:preference_selector="@drawable/wheel"-->
+        <!--app:default_color="@color/colorPrimary"/>-->
+
+    <net.margaritov.preference.colorpicker.ColorPickerPreference
         android:key="color"
-        android:title="Toolbar Color"
-        android:summary="changes toolbar color"
-        app:preference_dialog_title="Toolbar ColorPickerDialog"
-        app:preference_dialog_positive="Confirm"
-        app:preference_dialog_negative="Cancel"
-        app:preference_palette="@drawable/palette"
-        app:preference_selector="@drawable/wheel"
-        app:default_color="@color/colorPrimary"/>
+        android:title="Color"
+        android:summary=""
+        android:defaultValue="#000000"
+        alphaSlider="true" />
 
 </PreferenceScreen>

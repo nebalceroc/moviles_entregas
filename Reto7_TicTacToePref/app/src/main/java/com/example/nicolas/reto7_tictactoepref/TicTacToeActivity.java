@@ -45,6 +45,7 @@ public class TicTacToeActivity extends AppCompatActivity {
     private MediaPlayer mComputerMediaPLayer;
 
     private int turn;
+    private int color;
     private int d;
 
 
@@ -75,6 +76,7 @@ public class TicTacToeActivity extends AppCompatActivity {
         human_wins = mPrefs.getInt("human_wins",0);
         android_wins = mPrefs.getInt("android_wins",0);
         ties = mPrefs.getInt("ties",0);
+        color = mPrefs.getInt("color",0);
         //d = mPrefs.getInt("mdif",1);
 
         //ties = mPrefs.getInt("ties",0);
@@ -91,6 +93,7 @@ public class TicTacToeActivity extends AppCompatActivity {
 
         mBoardView = (BoardView) findViewById(R.id.board);
         mBoardView.setGame(mGame);
+        mBoardView.setColor(color);
         mBoardView.setOnTouchListener(mTouchListener);
         if(savedInstanceState==null){
             startNewGame();
@@ -247,6 +250,7 @@ public class TicTacToeActivity extends AppCompatActivity {
         ed.putInt("human_wins",human_wins);
         ed.putInt("android_wins",android_wins);
         ed.putInt("ties",ties);
+        ed.putInt("color",color);
         ed.putInt("mdif",d);
         ed.commit();
     }
@@ -266,6 +270,9 @@ public class TicTacToeActivity extends AppCompatActivity {
             }else{
                 mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Expert);
             }
+
+            mBoardView.setColor(mPrefs.getInt("color",0));
+            mBoardView.invalidate();
         }
     }
 
@@ -356,6 +363,7 @@ public class TicTacToeActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
+        mBoardView.invalidate();
         //mHumanMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.human);
         //mComputerMediaPLayer = MediaPlayer.create(getApplicationContext(), R.raw.computer);
     }
