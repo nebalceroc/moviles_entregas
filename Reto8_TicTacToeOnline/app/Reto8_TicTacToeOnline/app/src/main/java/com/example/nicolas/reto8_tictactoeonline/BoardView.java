@@ -10,9 +10,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.example.nicolas.reto7_tictactoepref.R;
-
-
 public class BoardView extends View {
 
     public static final int GRID_WIDTH = 6;

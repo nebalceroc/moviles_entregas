@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context="com.example.nicolas.reto8_tictactoeonline.MainActivity">
 
+    <fragment android:name="com.example.nicolas.reto8_tictactoeonline.GameListFragment"
+        android:id="@+id/afragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </android.support.constraint.ConstraintLayout>

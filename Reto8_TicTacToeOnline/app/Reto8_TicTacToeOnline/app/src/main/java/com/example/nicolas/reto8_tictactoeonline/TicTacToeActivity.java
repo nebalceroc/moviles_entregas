@@ -16,8 +16,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.nicolas.reto7_tictactoepref.R;
-
 import java.util.Random;
 
 public class TicTacToeActivity extends AppCompatActivity {

@@ -25,7 +25,7 @@ SECRET_KEY = 'k*%3ft_&7y2-8%hf3&4vnek^3+hyc(rmn5b&^x3!kr7pw)oviq'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS',"*,localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'tictactoe.apps.TictactoeConfig',
 ]
 
 MIDDLEWARE = [

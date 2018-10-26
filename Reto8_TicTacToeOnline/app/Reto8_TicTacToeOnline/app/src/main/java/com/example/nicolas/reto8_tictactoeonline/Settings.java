@@ -9,8 +9,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.example.nicolas.reto7_tictactoepref.R;
-
 import net.margaritov.preference.colorpicker.ColorPickerPreference;
 
 public class Settings extends PreferenceActivity{

@@ -9,7 +9,7 @@
         android:roundIcon="@drawable/nb_tic"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TicTacToeActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,7 +20,7 @@
             android:name=".Settings"
             android:label="Settings" />
         <activity
-            android:name=".MainActivity"
+            android:name=".TicTacToeActivity"
             android:label="@string/title_activity_main"></activity>
     </application>
 

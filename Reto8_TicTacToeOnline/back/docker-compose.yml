@@ -11,8 +11,8 @@ services:
       ports:
           - "3306:3306"
       volumes:
-        - mysql:/var/lib/mysql
-        - /var/lib/docker/volumes/mysql/_data:/var/lib/mysql
+        - mysql1:/var/lib/mysql
+        - /var/lib/docker/volumes/mysql1/_data:/var/lib/mysql
 
 
     tictactoe:
