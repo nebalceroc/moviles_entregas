@@ -1,0 +1,31 @@
+{% extends "base/skeleton.html" %}
+
+{% load staticfiles %}
+
+{% block page_title %}
+	DocApp Resend Registration Link
+{% endblock page_title %}
+
+{% block body %}
+<div class="row">
+	<form id="form-resend" method="post" class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-6  col-lg-offset-3 well">
+		<div class="page-header">
+			<h3> Resend Registration Link </h3>
+		</div>
+
+		{% csrf_token %}
+		<div class="form-group {% if base_form.errors %} {% if base_form.email.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+			<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-user"></i></span>
+				{{base_form.email}}
+			</div>
+			{{base_form.email.errors}}
+		</div>
+		<div class="form-group">
+			<button id="btn-resend" type="submit" class="btn btn-primary redirect_link">
+				<i class="fa fa-sign-in"></i> Resend
+			</button>
+		</div>
+	</form>
+</div>
+{% endblock body %}

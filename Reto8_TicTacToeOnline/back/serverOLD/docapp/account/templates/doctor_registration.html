@@ -1,0 +1,88 @@
+{% extends "base/skeleton.html" %}
+
+{% load staticfiles %}
+
+{% block page_title %}
+	DocApp Registration
+{% endblock page_title %}
+
+{% block body %}
+<div class="row">
+<div class="page-header col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+	<h2> Doctor Sign Up to DocApp! <!--<small>(<a href="{% url 'resend_registration_link' %}">click here</a> if you did not recieve your registration link)</small>--></h2>
+</div>
+<form id="form_registration" method="post" enctype="multipart/form-data" class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 well">
+	{% csrf_token %}
+	
+	<div class="form-group {% if base_form.errors %} {% if base_form.username.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+		<div class="input-group">
+			<span class="input-group-addon"><i class="fa fa-user"></i></span>
+			{{base_form.username}}
+		</div>
+		{{base_form.username.errors}}
+	</div>
+    
+    <div class="form-group {% if base_form.errors %} {% if base_form.age.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+		<div class="input-group">
+			<span class="input-group-addon"><i class="fa fa-user"></i></span>
+			{{base_form.age}}
+		</div>
+		{{base_form.age.errors}}
+	</div>
+    <div class="form-group {% if base_form.errors %} {% if base_form.nationality.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+		<div class="input-group">
+			<span class="input-group-addon"><i class="fa fa-user"></i></span>
+			{{base_form.nationality}}
+		</div>
+		{{base_form.nationality.errors}}
+	</div>
+    
+
+	<div class="form-group {% if base_form.errors %} {% if base_form.password.errors %} has-error {% endif %} {% endif %}">
+		<div class="input-group">
+			<span class="input-group-addon"><i class="fa fa-key"></i></span>
+			{{base_form.password}}
+		</div>
+		{{base_form.password.errors}}
+	</div>
+	<div class="form-group {% if base_form.errors %} {% if base_form.repeat_password.errors %} has-error {% endif %} {% endif %}">
+		<div class="input-group">
+			<span class="input-group-addon"><i class="fa fa-retweet"></i></span>
+			{{base_form.repeat_password}}
+		</div>
+		{{base_form.repeat_password.errors}}
+	</div>
+<div class="row">
+		<div class="sm-6 col-md-6 col-lg-6 form-group {% if base_form.errors %} {% if base_form.first_name.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+			<div class="input-group">
+				<span class="input-group-addon"><strong>F</strong></span>
+				{{base_form.first_name}}
+			</div>
+			{{base_form.first_name.errors}}
+		</div>
+		<div class="sm-6 col-md-6 col-lg-6 form-group {% if base_form.errors %} {% if base_form.last_name.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+			<div class="input-group">
+				<span class="input-group-addon"><strong>L</strong></span>
+				{{base_form.last_name}}
+			</div>
+			{{base_form.last_name.errors}}
+		</div>
+	</div>
+	<div class="form-group {% if base_form.errors %} {% if base_form.email.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+		<div class="input-group">
+			<span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+			{{base_form.email}}
+		</div>
+		{{base_form.email.errors}}
+	</div>
+	
+	
+    
+    <p>By clicking on Register you accept that you have readed and agreeded with our <a href="/account/terms-of-use/">Terms of Use</a> and <a href="/account/privacy-policy/">Privacy Policy</a>.</p>
+	<button type="submit" class="btn btn-default">
+		<i class="fa fa-edit"> </i> Register
+	</button>
+
+</form>
+</div>
+{% endblock body %}

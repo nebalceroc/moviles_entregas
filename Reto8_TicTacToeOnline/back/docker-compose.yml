@@ -1,0 +1,36 @@
+version: '2.1'
+services:
+    mysql:
+      container_name: con-mysql
+      environment:
+        - MYSQL_DATABASE=tictactoe
+        - MYSQL_USER=malpass
+        - MYSQL_ROOT_PASSWORD=malpass
+        - MYSQL_PASSWORD=malpass
+      image: mariadb:10.1
+      ports:
+          - "3306:3306"
+      volumes:
+        - mysql:/var/lib/mysql
+        - /var/lib/docker/volumes/mysql/_data:/var/lib/mysql
+
+
+    tictactoe:
+      container_name: tictactoe
+      build:
+          context: .
+          dockerfile: Dockerfile
+      tty: true
+      stdin_open: true
+      user: root
+      ports:
+          - "8085:8085"
+      links:
+          - mysql:mysql
+      environment:
+        - ALLOWED_HOSTS=*
+        - API_URL=localhost:8080
+      volumes:
+           - PROJECTDIR:/usr/src/server
+      working_dir: /usr/src/server
+      command: "python3 manage.py runserver 0.0.0.0:8085"

@@ -1,0 +1,65 @@
+{% extends "base/skeleton.html" %}
+
+{% load staticfiles %}
+
+{% block page_title %}
+	DocApp User Profile
+{% endblock page_title %}
+
+{% block header %}
+	{% include "base/headers/user_profile_header.html" %}
+{% endblock header%}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-sm-12">
+				<div >
+					<table>
+                        <tr><td> <h2>{{request.session.user_profile.user.username}}'s Profile</h2>
+				    <a href="/account/profile/update/"><span class="label label-success">EDIT</span></a>
+                            <div style="padding:5px"> Tokens: {{request.user.channel.balance}}</div>
+                            </td>
+                            
+                            <td>
+                                
+                            </td>
+                        
+                        </tr>
+                   
+                    </table>
+                    <hr>
+				</div>
+               <table class="table table-condensed">
+                <thead>
+                  <tr>
+                      <th>First Name</th>
+                      <th>Last Name</th>
+                      <th>Main Email</th>
+                    <th>Channel's Name</th>
+                    <th>Age</th>
+                    <th>Nationality</th>
+                    <th>Bio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                      <td>{{request.session.user_profile.user.first_name}}</td>
+                      <td>{{request.session.user_profile.user.last_name}}</td>
+                      <td>{{request.user.email}}</td>
+                    <td>{{request.user.channel.name}}</td>
+                      
+                    <td>{{request.session.user_profile.age}}</td>
+                    <td>{{request.session.user_profile.nationality}}</td>
+                    <td>{{request.session.user_profile.bio}}</td>
+                    
+                    </tr>
+                  
+                </tbody>
+              </table>
+               
+			</div>
+		</div>
+
+	</div>
+{% endblock body %}

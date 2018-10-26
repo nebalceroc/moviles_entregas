@@ -1,0 +1,43 @@
+{% extends "base/skeleton.html" %}
+
+{% load staticfiles %}
+
+{% block page_title %}
+	Help
+{% endblock page_title %}
+
+{% block header %}
+	{% include "base/headers/user_profile_header.html" %}
+{% endblock header%}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-sm-12">
+				<div class="page-header">
+					<h2>Help</h2>
+				</div>
+               <div class="well"> Welcome to the DocApp help. Please select the topic of your interest: 
+                </div>
+              <ul>
+                  <li>
+                      Create a broadcast
+                  </li>
+                  <li>
+                      Edit your channel
+                  </li>
+                  <li>
+                      Edit your personal info
+                  </li>
+                  <li>
+                      Change your goal or status
+                  </li>
+                  <li>
+                      Tip a channel
+                  </li>
+                </ul>
+			</div>
+		</div>
+
+	</div>
+{% endblock body %}

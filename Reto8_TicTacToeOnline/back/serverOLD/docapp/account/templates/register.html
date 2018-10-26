@@ -1,0 +1,21 @@
+{% extends "base/skeleton.html" %}
+
+{% load staticfiles %}
+
+{% block page_title %}
+	DocApp Registration
+{% endblock page_title %}
+
+{% block body %}
+<div class="row">
+<div class="page-header col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+	<h2> Sign Up to DocApp! <!--<small>(<a href="{% url 'resend_registration_link' %}">click here</a> if you did not recieve your registration link)</small>--></h2>
+</div>
+<div class="col-lg-3 col-lg-offset-5 col-md-3 col-md-offset-5 col-sm-6 col-sm-offset-3">
+    <a class="btn btn-primary " href="/account/patient-registration/" >Sign Up as a Patient</a>
+	<br>
+	<br>
+    <a class="btn btn-primary "  href="/account/doctor-registration/" >Sign Up as a Doctor</a>
+</div>
+</div>
+{% endblock body %}

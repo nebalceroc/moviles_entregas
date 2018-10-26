@@ -1,0 +1,16 @@
+/* theme colors ;)    
+    shade 0 = #4D54A1 = rgb( 77, 84,161) = rgba( 77, 84,161,1) = rgb0(0.302,0.329,0.631)
+    shade 1 = #FFFFFF = rgb(255,255,255) = rgba(255,255,255,1) = rgb0(1,1,1)
+    shade 2 = #9FA3DA = rgb(159,163,218) = rgba(159,163,218,1) = rgb0(0.624,0.639,0.855)
+    shade 3 = #202671 = rgb( 32, 38,113) = rgba( 32, 38,113,1) = rgb0(0.125,0.149,0.443)
+    shade 4 = #000000 = rgb(  0,  0,  0) = rgba(  0,  0,  0,1) = rgb0(0,0,0)
+*/
+.navbar-inverse {
+/* shade 0*/
+background-color: #4D54A1;
+ border-width:0px;
+}
+.navbar-inverse .navbar-brand {
+    /* shade 2*/
+    color: #9FA3DA;
+}

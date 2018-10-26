@@ -1,0 +1,37 @@
+{% block form_fields %}
+	{% csrf_token %}
+	
+	{% if base_form.non_field_errors %}
+		<div class="errorlist-container">
+			<i class="icon-warning-sign"></i>{{base_form.non_field_errors}}
+		</div>
+	{% endif %}
+	
+	{% for field in base_form.visible_fields %}
+		<div class="form-group {% if base_form.errors %} {% if field.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+			<label class="col-sm-2 control-label" for="{{field.name}}"> {{field.label|capfirst}} {% if field.field.required %} <span class="required">(<i class="fa fa-star"></i>)</span> {% endif %} </label>
+			<div class="col-sm-8">
+				{{field}}
+				{% if field.errors %}
+				<div class="errorlist-container">
+					<i class="fa fa-warning"></i>{{field.errors}}
+				</div>
+				{% endif %}
+				<p class="help-block">
+					{{field.help_text}}
+				</p>
+			</div>
+		</div>
+	{% endfor %}
+	
+	<!--  HIDDEN FIELDS -->
+	{% for field in base_form.hidden_fields %}
+		<div style="display:none;">
+			{{ field }}
+		</div>
+	{% endfor %}
+	
+{% endblock form_fields %}
+
+{% block form_buttons %}
+{% endblock form_buttons%}

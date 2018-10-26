@@ -1,0 +1,5 @@
+version: '2.1'
+services:
+    tictactoe:
+      volumes:
+           - /home/nicolas/Unal/aplicaciones_moviles/entregas_moviles/Reto8_TicTacToeOnline/server/:/usr/src/server

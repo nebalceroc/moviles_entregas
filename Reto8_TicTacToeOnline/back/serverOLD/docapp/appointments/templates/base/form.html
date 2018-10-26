@@ -1,0 +1,15 @@
+{% extends "base/form_fields.html" %}
+
+{% block form_buttons %}
+	<div class="form-group">
+		<div class="col-sm-4"></div>
+		<div class="col-sm-8">
+			<button id="btn-save" type="submit" class="btn btn-primary redirect_link">
+				<i class="fa fa-save"></i> Save
+			</button>
+			<a id="btn-cancel" class="btn btn-danger">
+				<i class="fa fa-times-circle"></i> Cancel
+			</a>
+		</div>
+	</div>
+{% endblock form_buttons%}

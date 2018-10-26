@@ -1,0 +1,41 @@
+{% extends "base/skeleton.html" %}
+
+{% block page_title %}DocApp Login {% endblock page_title%}
+{% load staticfiles %}
+
+{% block body %}
+
+<div class="row">
+	<div class="col-lg-3 col-lg-offset-5 col-md-3 col-md-offset-5 col-sm-6 col-sm-offset-3 login-container">
+		<form id="form-login" method="post" class="well">
+			<h3> Login </h3>
+			<hr />
+			{% csrf_token %}
+			<div class="form-group {% if base_form.errors %} {% if base_form.username.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-user"></i></span>
+					{{base_form.username}}
+				</div>
+				{{base_form.username.errors}}
+			</div>
+			<div class="form-group {% if base_form.errors %} {% if base_form.password.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="fa fa-key"></i></span>
+					{{base_form.password}}
+				</div>
+				{{base_form.password.errors}}
+			</div>
+
+			<div class="form-group">
+				<button id="btn-login" type="submit" class="btn btn-primary redirect_link">
+					<i class="fa fa-sign-in"></i> Login
+				</button>
+				<p class="help-block">
+					Forgot <a href="{% url 'forgot_password' %}"> password </a> or <a href="{% url 'forgot_username' %}"> username? </a>
+				</p>
+			</div>
+		</form>
+	</div>
+</div>
+
+{% endblock body %}

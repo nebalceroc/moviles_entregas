@@ -1,0 +1,81 @@
+{% extends "base/skeleton.html" %}
+
+{% load staticfiles %}
+
+{% block page_title %}
+DocApp Profile Update
+{% endblock page_title %}
+
+{% block body %}
+	<div class="container">
+		<form id="form_registration" method="post" enctype="multipart/form-data" class="col-lg-6 col-md-6 col-sm-8">
+			{% csrf_token %}
+			
+	       <div class="row">
+
+			<div class="col-md-9">
+			<h2>Edit Profile
+			</h2>
+			
+			<a href="/channel/broadcast/" class="label label-success">DONE</a>
+			
+			
+			</div>
+			
+		  </div>
+            <hr>
+			
+			
+			<div class="row">
+				<div class="sm-6 col-md-6 col-lg-6 form-group {% if base_form.errors %} {% if base_form.first_name.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+					<label>{{base_form.first_name.label}}</label>
+					<div class="input-group">
+						<span class="input-group-addon"><strong>F</strong></span>
+						{{base_form.first_name}}
+					</div>
+					{{base_form.first_name.errors}}
+				</div>
+				<div class="sm-6 col-md-6 col-lg-6 form-group {% if base_form.errors %} {% if base_form.last_name.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+					<label>{{base_form.last_name.label}}</label>
+					<div class="input-group">
+						<span class="input-group-addon"><strong>L</strong></span>
+						{{base_form.last_name}}
+					</div>
+					{{base_form.last_name.errors}}
+				</div>
+                
+             <!--   <div class="sm-6 col-md-6 col-lg-6 form-group {% if base_form.errors %} {% if base_form.channel_name.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+					<label>Channel's name</label>
+					<div class="input-group">
+						<span class="input-group-addon"><strong>C</strong></span>
+						{{base_form.channel_name}}
+					</div>
+					{{base_form.channel_name.errors}}
+				</div>-->
+                <div class="sm-6 col-md-6 col-lg-6 form-group{% if base_form.errors %} {% if base_form.email.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                        {{base_form.email}}
+                    </div>
+                    {{base_form.email.errors}}
+                </div>
+                <div class="sm-6 col-md-6 col-lg-6 form-group {% if base_form.errors %} {% if base_form.bio.errors %} has-error {% else %} has-success {% endif %} {% endif %}">
+					<label>Bio</label>
+					<div class="input-group">
+						
+						{{base_form.bio}}
+					</div>
+					{{base_form.bio.errors}}
+				</div>
+                
+			</div>
+			
+			<button type="submit" class="btn btn-default">
+				<i class="fa fa-edit"> </i> Update
+			</button>
+			
+			<a href="{% url 'profile' %}" class="btn btn-default"><i class="fa fa-times-circle"> </i> Cancel</a>
+		
+		</form>
+	</div>
+{% endblock body %}
