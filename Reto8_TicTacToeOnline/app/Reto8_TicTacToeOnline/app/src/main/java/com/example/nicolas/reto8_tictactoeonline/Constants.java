@@ -5,7 +5,8 @@ public class Constants {
     public static final String BROADCAST_CHAT_MESSAGE_NOTIFICATION = "chat_message";
     public static final String BROADCAST_APPOINTMENT_STATUS_UPDATE_NOTIFICATION = "appointment_status_update";
     public static final String BROADCAST_DEFAULT_NOTIFICATION = "DEFAULT";
-    public static final String JOIN_GAME_NOTIFICATION = "DEFAULT";
+    public static final String JOIN_GAME_NOTIFICATION = "JOIN";
+    public static final String ACTION_GAME_NOTIFICATION = "ACTION";
 
 
     public static Boolean isStopped;
@@ -22,10 +23,11 @@ public class Constants {
 
 
     public static final String API_URL_GAME_VIEWSET = API_URL + "api/games/";
+    public static final String API_URL_GAME_ENTER_VIEWSET = API_URL + "api/games/join_game/";
 
     public static final int LOGOUT = -1;
     public static final int LOGIN_REQUEST = 0;
-    public static final int LOGIN_SUCCESS = 1;
+    public static final int USER_JOINED = 1;
     public static final int LOGIN_ERROR = 2;
     public static final int USER_REGISTER_REQUEST = 3;
     public static final int USER_REGISTER_SUCCESS = 4;

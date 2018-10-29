@@ -38,7 +38,7 @@ public class BoardView extends View {
         mHumanBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.x_img);
         mComputerBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.o_img);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(Color.LTGRAY);
+        mPaint.setColor(Color.BLACK);
     }
 
     public void setColor(int color){

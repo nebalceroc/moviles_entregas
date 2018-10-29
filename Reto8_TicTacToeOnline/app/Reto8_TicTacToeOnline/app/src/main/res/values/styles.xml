@@ -8,4 +8,25 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="LoaderTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:alertDialogStyle">@style/LoaderStyle</item>
+        <item name="android:textColorPrimary">@color/colorPrimary</item>
+        <item name="android:textColorSecondary">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/grey</item>
+    </style>
+
+    <style name="LoaderStyle">
+        <item name="android:bottomBright">@color/colorPrimary</item>
+        <item name="android:bottomDark">@color/colorPrimaryLight</item>
+        <item name="android:bottomMedium">@color/grey</item>
+        <item name="android:centerBright">@color/colorPrimary</item>
+        <item name="android:centerDark">@color/colorPrimaryLight</item>
+        <item name="android:centerMedium">@color/colorPrimary</item>
+        <item name="android:fullBright">@color/colorPrimary</item>
+        <item name="android:fullDark">@color/colorPrimaryLight</item>
+        <item name="android:topBright">@color/colorPrimary</item>
+        <item name="android:topDark">@color/colorPrimaryLight</item>
+        <item name="background">@color/alpha</item>
+    </style>
+
 </resources>

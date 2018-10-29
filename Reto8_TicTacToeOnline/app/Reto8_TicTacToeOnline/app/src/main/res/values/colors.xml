@@ -2,7 +2,38 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryLight">#fafafa</color>
+    <color name="colorPrimaryHover">#007C7F</color>
+    <color name="colorPrimaryTextDark">#212121</color>
+    <color name="colorSecondaryTextDark">#757575</color>
+    <color name="colorPrimaryTextWhite">#ffffff</color>
+    <color name="colorSecondaryTextWhite">#757575</color>
+    <color name="colorIcons">#FFFFFF</color>
+    <color name="colorDivider">#BDBDBD</color>
+
+    <color name="grey">#00ffffff</color>
+    <color name="colorAccent">#009688</color>
+    <color name="colorAccentDark">#007167</color>
+    <color name="colorAppintmentListItemBackground">#ffffff</color>
+    <color name="colorHintText">#808080</color>
+    <color name="redDoctorStatusText">#830303</color>
+    <color name="greenDoctorStatusText">#038309</color>
+    <color name="smessage">#669496</color>
+    <color name="rmessage">#ffffff</color>
+    <color name="appButton0">#d2808080</color>
+    <color name="appButton1">#c83abf76</color>
+    <color name="appButton2">#c86577ff</color>
+    <color name="appButton3">#c8808080</color>
+    <color name="appButton4">#c8c73333</color>
+
+    <color name="primary">#00569a</color>
+    <color name="primary_dark">#003a68</color>
+    <color name="primary_light">#C5CAE9</color>
+    <color name="accent">#007c7f</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
 
     <color name="alpha">#00ffffff</color>
 </resources>

@@ -19,6 +19,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+        Log.e(TAG,"NOTIF");
         // [START_EXCLUDE]
         // There are two types of messages data messages and notification messages. Data messages are handled
         // here in onMessageReceived whether the app is in the foreground or background. Data messages are the type
@@ -38,8 +39,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.e(TAG, "Message data payload: " + remoteMessage.getData());
             Log.e(TAG, remoteMessage.getData().get("nkind"));
             switch(remoteMessage.getData().get("nkind")){
-                case "CHAT_MESSAGE":
-                    id = Constants.CHAT_MESSAGE_NOTIFICATION;
+                case "JOIN":
+                    id = Constants.USER_JOINED;
                     break;
 
                 case "APPOINTMENT_STATUS_UPDATE":
@@ -70,12 +71,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         switch (remoteMessage.getData().get("nkind")){
             case "JOIN":
                 pushNotification = new Intent(Constants.JOIN_GAME_NOTIFICATION);
-                pushNotification.putExtra("msg_id", remoteMessage.getData().get("id"));
-                pushNotification.putExtra("sender_id", remoteMessage.getData().get("sender"));
-                pushNotification.putExtra("time_sent", remoteMessage.getData().get("time_sent"));
-                pushNotification.putExtra("message", remoteMessage.getData().get("message"));
-                Log.e(TAG,"TS:"+remoteMessage.getData().get("time_sent")+"Sender:"+remoteMessage.getData().get("sender")+" msg:"+remoteMessage.getData().get("message"));
+                pushNotification.putExtra("guest", remoteMessage.getData().get("guest"));
+                //Log.e(TAG,"TS:"+remoteMessage.getData().get("time_sent")+"Sender:"+remoteMessage.getData().get("sender")+" msg:"+remoteMessage.getData().get("message"));
                 break;
+            case "ACTION":
+                pushNotification = new Intent(Constants.ACTION_GAME_NOTIFICATION);
+                pushNotification.putExtra("action", remoteMessage.getData().get("action"));
+                pushNotification.putExtra("winner", remoteMessage.getData().get("winner"));
+                //Log.e(TAG,"TS:"+remoteMessage.getData().get("time_sent")+"Sender:"+remoteMessage.getData().get("sender")+" msg:"+remoteMessage.getData().get("message"));
+                break;
+
 
             default:
                 pushNotification = new Intent(Constants.BROADCAST_DEFAULT_NOTIFICATION);

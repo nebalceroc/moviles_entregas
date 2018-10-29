@@ -1,18 +1,18 @@
 version: '2.1'
 services:
-    mysql:
-      container_name: con-mysql
-      environment:
-        - MYSQL_DATABASE=tictactoe
-        - MYSQL_USER=malpass
-        - MYSQL_ROOT_PASSWORD=malpass
-        - MYSQL_PASSWORD=malpass
-      image: mariadb:10.1
-      ports:
-          - "3306:3306"
-      volumes:
-        - mysql1:/var/lib/mysql
-        - /var/lib/docker/volumes/mysql1/_data:/var/lib/mysql
+    # mysql:
+    #   container_name: con-mysql
+    #   environment:
+    #     - MYSQL_DATABASE=tictactoe
+    #     - MYSQL_USER=malpass
+    #     - MYSQL_ROOT_PASSWORD=malpass
+    #     - MYSQL_PASSWORD=malpass
+    #   image: mariadb:10.1
+    #   ports:
+    #       - "3306:3306"
+    #   volumes:
+    #     - mysql1:/var/lib/mysql
+    #     - /var/lib/docker/volumes/mysql1/_data:/var/lib/mysql
 
 
     tictactoe:
@@ -25,10 +25,10 @@ services:
       user: root
       ports:
           - "8085:8085"
-      links:
-          - mysql:mysql
+      # links:
+      #     - mysql:mysql
       environment:
-        - ALLOWED_HOSTS=*
+        - ALLOWED_HOSTS=*,localhost,127.0.0.1
         - API_URL=localhost:8080
       volumes:
            - PROJECTDIR:/usr/src/server

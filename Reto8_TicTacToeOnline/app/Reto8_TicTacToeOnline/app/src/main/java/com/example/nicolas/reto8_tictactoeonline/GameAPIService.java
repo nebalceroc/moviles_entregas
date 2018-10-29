@@ -27,11 +27,20 @@ public class GameAPIService {
     }
 
     public void create(String host, String guest, String board, String turn, String state,
-                       Response.Listener<JSONObject> response_listener,
+                       Response.Listener<String> response_listener,
                        Response.ErrorListener error_listener){
 
         Game game = new Game(host,guest,board,turn,state);
         game.create(context,response_listener, error_listener);
+
+    }
+
+    public void join(int id,
+                       Response.Listener<String> response_listener,
+                       Response.ErrorListener error_listener){
+
+        Game game = new Game();
+        game.join(context,id,response_listener, error_listener);
 
     }
 

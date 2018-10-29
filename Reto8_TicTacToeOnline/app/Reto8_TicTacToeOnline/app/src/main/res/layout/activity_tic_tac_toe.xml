@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".TicTacToeActivity">
+    tools:context=".TicTacToeActivity"
+    android:id="@+id/container">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/login_container">
         <TextView
             android:id="@+id/info_text"
             android:layout_width="wrap_content"
@@ -41,6 +43,24 @@
             android:layout_gravity="center"/>
     </LinearLayout>
 
-
-
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/loading_container"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Esperando Oponente"
+            android:layout_centerInParent="true"
+            android:layout_above="@+id/loading_text"
+            android:gravity="center"
+            android:layout_marginBottom="5dp"/>
+        <TextView
+            android:id="@+id/loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"/>
+    </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

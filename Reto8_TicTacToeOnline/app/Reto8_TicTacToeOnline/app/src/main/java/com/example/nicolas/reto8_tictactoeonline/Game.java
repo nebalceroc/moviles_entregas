@@ -17,7 +17,10 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class Game implements Parcelable {
 
@@ -56,34 +59,63 @@ public class Game implements Parcelable {
         Log.e("PARC turn",String.valueOf(turn));
     }
 
+    public void join(final Context context, int id,
+                       Response.Listener response_listener,
+                       Response.ErrorListener error_listener){
+        try {
+            final String my_fcm = SessionManager.getInstance(context).getToken();
+            Log.e("GAME API", "REQUEST JOIN");
+
+            StringRequest postRequest = new StringRequest(Request.Method.POST, Constants.API_URL_GAME_ENTER_VIEWSET,
+                    response_listener,
+                    error_listener
+            ) {
+                @Override
+                protected Map<String, String> getParams()
+                {
+
+                    Map<String, String>  params = new HashMap<String, String>();
+                    params.put("game_id", String.valueOf(id));
+                    params.put("guest_fcm_token", my_fcm);
+
+                    return params;
+                }
+            };
+            Constants.mRequestQueue.getInstance(context).addToRequestQueue(postRequest);
+        }catch(Exception e){
+            Toast.makeText(context, "There was a problem.", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
     public void create(final Context context,
                        Response.Listener response_listener,
                        Response.ErrorListener error_listener){
         try {
-            SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-            String my_fcm = mPrefs.getString("token","");
-            JSONObject newGame = new JSONObject();
-            newGame.accumulate("host", "");
-            newGame.accumulate("host_fcm_token", my_fcm);
+            final SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+            final String my_fcm = SessionManager.getInstance(context).getToken();
+//            JSONObject newGame = new JSONObject();
+//            newGame.accumulate("host", "");
+//            newGame.accumulate("host_fcm_token", my_fcm);
             Log.e("GAME API", "REQUEST CREATE INIT");
-            Map<String, String> headers = new HashMap<String, String>();
-            JsonObjectRequest jsObjRequest = new JsonObjectRequest
-                    (Request.Method.POST, Constants.API_URL_GAME_VIEWSET,
-                            newGame,
-                            response_listener,
-                            error_listener){
+
+            StringRequest postRequest = new StringRequest(Request.Method.POST, Constants.API_URL_GAME_VIEWSET,
+                    response_listener,
+                    error_listener
+            ) {
                 @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<String, String>();
-                    //SessionManager sm = new SessionManager(context);
-//                    params.put("Authorization", "Token " + SessionManager.getInstance(context).getToken());
+                protected Map<String, String> getParams()
+                {
+
+                    Map<String, String>  params = new HashMap<String, String>();
+                    params.put("host", "");
+                    params.put("host_fcm_token", my_fcm);
+
                     return params;
                 }
-            };;
-            // Add the request to the RequestQueue.
-            jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(0, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            Constants.mRequestQueue.getInstance(context).addToRequestQueue(jsObjRequest);
-        }catch(JSONException e){
+            };
+            Constants.mRequestQueue.getInstance(context).addToRequestQueue(postRequest);
+        }catch(Exception e){
             Toast.makeText(context, "There was a problem.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }

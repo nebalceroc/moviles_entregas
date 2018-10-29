@@ -1,21 +1,37 @@
 package com.example.nicolas.reto8_tictactoeonline;
 
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ybq.android.spinkit.style.Circle;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.Random;
 
 public class TicTacToeActivity extends AppCompatActivity {
@@ -43,8 +59,22 @@ public class TicTacToeActivity extends AppCompatActivity {
     private int color;
     private int d;
 
+    private Circle mCircleDrawable;
 
     private SharedPreferences mPrefs;
+
+    private boolean full=false;
+    private ProgressDialog progressDialog;
+    private boolean loading;
+
+
+    private void toggleContent(int option){
+        if(option==0){
+            progressDialog.show();
+        }else{
+            progressDialog.dismiss();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,19 +88,32 @@ public class TicTacToeActivity extends AppCompatActivity {
         String difficultyLevel = mPrefs.getString("difficulty_level",
                 getResources().getString(R.string.difficulty_harder));
 
-        mGame = new TicTacToeGame();
-
-        if(difficultyLevel.equals(getResources().getString(R.string.difficulty_easy))){
-            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Easy);
-        }else if(difficultyLevel.equals(getResources().getString(R.string.difficulty_harder))){
-            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Harder);
-        }else{
-            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Expert);
+        mGame = SessionManager.getInstance(getApplicationContext()).getGame();
+        if(mGame==null){
+            try {
+                mGame = new TicTacToeGame();
+                Intent intent = getIntent();
+                String str = intent.getStringExtra("str");
+                JSONObject json = new JSONObject(str);
+                String board_str = (String) json.get("board");
+                turn = (int) json.get("turn");
+                SessionManager.getInstance(getApplicationContext()).setGame(mGame);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
-        human_wins = mPrefs.getInt("human_wins",0);
-        android_wins = mPrefs.getInt("android_wins",0);
-        ties = mPrefs.getInt("ties",0);
+//        if(difficultyLevel.equals(getResources().getString(R.string.difficulty_easy))){
+//            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Easy);
+//        }else if(difficultyLevel.equals(getResources().getString(R.string.difficulty_harder))){
+//            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Harder);
+//        }else{
+//            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Expert);
+//        }
+
+//        human_wins = mPrefs.getInt("human_wins",0);
+//        android_wins = mPrefs.getInt("android_wins",0);
+//        ties = mPrefs.getInt("ties",0);
         color = mPrefs.getInt("color",0);
         //d = mPrefs.getInt("mdif",1);
 
@@ -94,6 +137,22 @@ public class TicTacToeActivity extends AppCompatActivity {
             startNewGame();
         }
         updateScore();
+        //OLD PROGRESS DIALOG
+        progressDialog = new ProgressDialog(this, R.style.LoaderTheme);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setTitle("TicTacToe");
+        progressDialog.setMessage("Esperando Oponente");
+        progressDialog.setCancelable(false);
+
+        //NEW MATERIAL ANIMATION
+        TextView textView = (TextView) findViewById(R.id.loading_text);
+        mCircleDrawable = new Circle();
+        mCircleDrawable.setBounds(0, 0, 100, 100);
+        mCircleDrawable.setColor(Color.parseColor("#0064b4"));
+        textView.setCompoundDrawables(null, null, mCircleDrawable, null);
+        if(!full){
+            progressDialog.show();
+        }
     }
 
     private void resetScores(){
@@ -168,6 +227,33 @@ public class TicTacToeActivity extends AppCompatActivity {
             }, 2000);
         }
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                // Get extra data included in the Intent
+                Log.e(TAG,"t_id"+target_id+" Broadcast"+intent.getExtras().getString("sender_id"));
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.ssss'Z'");
+                String message = intent.getStringExtra("message");
+                Log.e(TAG, "Got message: " + message);
+                User s = db.findUser(Integer.valueOf(intent.getExtras().getString("sender_id")));
+                Log.e(TAG,""+intent.getExtras().getString("sender_id")+s.getFirstname()+intent.getExtras().getString("time_sent"));
+                User r = SessionManager.getInstance(context).getUserDetails();
+                Message new_message = new Message(intent.getExtras().getString("message"),s,r);
+                new_message.setTime(format.parse(intent.getExtras().getString("time_sent")));
+                if(Integer.valueOf(intent.getExtras().getString("sender_id"))==target_id){
+                    mAdapter.addItem(new_message);
+                    Log.e(TAG,"add");
+                }
+
+                db.addMessage(new_message);
+
+            } catch (ParseException e) {
+                Log.e(TAG,e.getLocalizedMessage());
+            }
+        }
+    };
 
     /*@Override
     protected Dialog onCreateDialog(int id){
@@ -274,14 +360,8 @@ public class TicTacToeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
-            case R.id.new_game:
-                startNewGame();
-                return true;
             case R.id.settings:
                 startActivityForResult(new Intent(this, Settings.class), 0);
-                return true;
-            case R.id.reset_scores:
-                resetScores();
                 return true;
             case R.id.about:
                 showDialog(DIALOG_ABOUT_ID);
