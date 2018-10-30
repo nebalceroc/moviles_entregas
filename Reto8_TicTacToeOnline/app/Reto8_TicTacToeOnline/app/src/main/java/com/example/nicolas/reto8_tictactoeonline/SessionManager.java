@@ -3,6 +3,7 @@ package com.example.nicolas.reto8_tictactoeonline;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 
 public class SessionManager {
@@ -27,6 +28,12 @@ public class SessionManager {
     private static final String KEY_TOKEN = "token";
     private static final String KEY_INGAME = "ingame";
 
+    private static final String KEY_ID = "id";
+    private static final String KEY_BOARD = "board";
+    private static final String KEY_PLAYER = "player";
+    private static final String KEY_TURN = "turn";
+    private static final String KEY_GO = "gameOver";
+    private static final String KEY_FULL = "full";
 
 
 
@@ -46,17 +53,40 @@ public class SessionManager {
     }
 
     public TicTacToeGame getGame(){
+        Log.e("GAME","GET");
         boolean ingame = pref.getBoolean(KEY_INGAME, false);
         if(ingame){
-            return null;
+            TicTacToeGame game = new TicTacToeGame();
+            game.id = pref.getInt(KEY_ID,-1);
+            game.iam = pref.getString(KEY_PLAYER,"_").charAt(0);
+            Log.e("ASD",pref.getString(KEY_BOARD,"EEEEEEEEE"));
+            Log.e("ASD",pref.getString(KEY_BOARD,"EEEEEEEEE"));
+            game.setmBoardStateFromStr(pref.getString(KEY_BOARD,"EEEEEEEEE"));
+            game.turn = pref.getInt(KEY_TURN,1);
+            game.gameOver = pref.getBoolean(KEY_GO,false);
+            game.full = pref.getBoolean(KEY_FULL,false);
+            return game;
         }else{
+            Log.e("ASD","aSADaq");
             return null;
         }
 
     }
 
-    public void setGame(TicTacToeGame game){
+    public void clearGame(){
+        editor.putBoolean(KEY_INGAME, false);
+        editor.commit();
+    }
 
+    public void setGame(TicTacToeGame game){
+        editor.putBoolean(KEY_INGAME, true);
+        editor.putString(KEY_BOARD, game.getBoardStr());
+        editor.putString(KEY_PLAYER, String.valueOf(game.iam));
+        editor.putInt(KEY_TURN, game.turn);
+        editor.putBoolean(KEY_GO,game.gameOver);
+        editor.putInt(KEY_ID,game.id);
+        editor.putBoolean(KEY_FULL,game.full);
+        editor.commit();
     }
 
     // Set token

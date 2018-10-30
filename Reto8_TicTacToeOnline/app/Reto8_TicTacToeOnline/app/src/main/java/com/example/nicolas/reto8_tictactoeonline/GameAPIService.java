@@ -44,6 +44,14 @@ public class GameAPIService {
 
     }
 
+    public void set_move(int id, char player, int location,
+                     Response.Listener<String> response_listener,
+                     Response.ErrorListener error_listener){
+
+        Game game = new Game();
+        game.set_move(context,id,player,location,response_listener, error_listener);
+    }
+
     public void get_games(Response.Listener<JSONArray> response_listener,
                                          Response.ErrorListener error_listener){
         JSONArray arr = new JSONArray();

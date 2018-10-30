@@ -24,13 +24,14 @@ public class Constants {
 
     public static final String API_URL_GAME_VIEWSET = API_URL + "api/games/";
     public static final String API_URL_GAME_ENTER_VIEWSET = API_URL + "api/games/join_game/";
+    public static final String API_URL_GAME_SET_MOVE_VIEWSET = API_URL + "api/games/set_move/";
 
     public static final int LOGOUT = -1;
     public static final int LOGIN_REQUEST = 0;
     public static final int USER_JOINED = 1;
     public static final int LOGIN_ERROR = 2;
-    public static final int USER_REGISTER_REQUEST = 3;
-    public static final int USER_REGISTER_SUCCESS = 4;
+    public static final int START_TTT_ACTIVITY = 3;
+    public static final int START_TTT_ACTIVITY_JOIN = 4;
     public static final int USER_REGISTER_ERROR = 5;
     public static final int USER_MAIN = 6;
     public static final int APPOINTMENT_CREATION_REQUEST = 10;

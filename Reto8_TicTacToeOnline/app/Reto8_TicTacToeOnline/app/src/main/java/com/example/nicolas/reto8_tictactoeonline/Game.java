@@ -59,6 +59,34 @@ public class Game implements Parcelable {
         Log.e("PARC turn",String.valueOf(turn));
     }
 
+    public void set_move(final Context context, int id, char player, int location,
+                     Response.Listener response_listener,
+                     Response.ErrorListener error_listener){
+        try {
+            final String my_fcm = SessionManager.getInstance(context).getToken();
+            Log.e("GAME API", "SET MOVE");
+
+            StringRequest postRequest = new StringRequest(Request.Method.POST, Constants.API_URL_GAME_SET_MOVE_VIEWSET,
+                    response_listener,
+                    error_listener
+            ) {
+                @Override
+                protected Map<String, String> getParams()
+                {
+                    Map<String, String>  params = new HashMap<String, String>();
+                    params.put("game_id", String.valueOf(id));
+                    params.put("location", String.valueOf(location));
+                    params.put("player", String.valueOf(player));
+                    return params;
+                }
+            };
+            Constants.mRequestQueue.getInstance(context).addToRequestQueue(postRequest);
+        }catch(Exception e){
+            Toast.makeText(context, "There was a problem.", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
     public void join(final Context context, int id,
                        Response.Listener response_listener,
                        Response.ErrorListener error_listener){

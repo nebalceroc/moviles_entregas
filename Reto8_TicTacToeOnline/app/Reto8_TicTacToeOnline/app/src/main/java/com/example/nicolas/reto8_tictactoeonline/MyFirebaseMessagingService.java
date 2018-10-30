@@ -72,12 +72,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             case "JOIN":
                 pushNotification = new Intent(Constants.JOIN_GAME_NOTIFICATION);
                 pushNotification.putExtra("guest", remoteMessage.getData().get("guest"));
+                pushNotification.putExtra("kind", "join");
                 //Log.e(TAG,"TS:"+remoteMessage.getData().get("time_sent")+"Sender:"+remoteMessage.getData().get("sender")+" msg:"+remoteMessage.getData().get("message"));
                 break;
             case "ACTION":
                 pushNotification = new Intent(Constants.ACTION_GAME_NOTIFICATION);
                 pushNotification.putExtra("action", remoteMessage.getData().get("action"));
                 pushNotification.putExtra("winner", remoteMessage.getData().get("winner"));
+                pushNotification.putExtra("kind", "action");
                 //Log.e(TAG,"TS:"+remoteMessage.getData().get("time_sent")+"Sender:"+remoteMessage.getData().get("sender")+" msg:"+remoteMessage.getData().get("message"));
                 break;
 
@@ -89,6 +91,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //Adding notification data to the intent
         pushNotification.putExtra("body", remoteMessage.getNotification().getBody());
         pushNotification.putExtra("title", remoteMessage.getNotification().getTitle());
+
 
         NotificationHandler notificationHandler = new NotificationHandler(getApplicationContext());
 

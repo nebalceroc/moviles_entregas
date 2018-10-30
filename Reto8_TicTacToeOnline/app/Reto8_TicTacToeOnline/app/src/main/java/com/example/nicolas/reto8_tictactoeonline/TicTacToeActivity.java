@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -11,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
 import android.transition.TransitionManager;
@@ -26,6 +28,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.github.ybq.android.spinkit.style.Circle;
 
 import org.json.JSONException;
@@ -76,44 +80,41 @@ public class TicTacToeActivity extends AppCompatActivity {
         }
     }
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String kind = intent.getStringExtra("kind");
+            switch (kind){
+                case "join":
+                    progressDialog.hide();
+                    mGame.full=true;
+                    SessionManager.getInstance(context).setGame(mGame);
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("ASD","CREATED");
+        //Log.e("ASD","CREATED");
 
         setContentView(R.layout.activity_tic_tac_toe);
         //mPrefs = getSharedPreferences("ttt_prefs",MODE_PRIVATE);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSoundOn = mPrefs.getBoolean("sound",true);
-        String difficultyLevel = mPrefs.getString("difficulty_level",
-                getResources().getString(R.string.difficulty_harder));
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter(Constants.JOIN_GAME_NOTIFICATION));
 
         mGame = SessionManager.getInstance(getApplicationContext()).getGame();
         if(mGame==null){
-            try {
-                mGame = new TicTacToeGame();
-                Intent intent = getIntent();
-                String str = intent.getStringExtra("str");
-                JSONObject json = new JSONObject(str);
-                String board_str = (String) json.get("board");
-                turn = (int) json.get("turn");
-                SessionManager.getInstance(getApplicationContext()).setGame(mGame);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            startNewGame();
+            mGame = new TicTacToeGame();
+            Intent intent = getIntent();
+            turn = (int) mGame.turn;
+            SessionManager.getInstance(this).setGame(mGame);
         }
-
-//        if(difficultyLevel.equals(getResources().getString(R.string.difficulty_easy))){
-//            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Easy);
-//        }else if(difficultyLevel.equals(getResources().getString(R.string.difficulty_harder))){
-//            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Harder);
-//        }else{
-//            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Expert);
-//        }
-
-//        human_wins = mPrefs.getInt("human_wins",0);
-//        android_wins = mPrefs.getInt("android_wins",0);
-//        ties = mPrefs.getInt("ties",0);
         color = mPrefs.getInt("color",0);
         //d = mPrefs.getInt("mdif",1);
 
@@ -133,9 +134,7 @@ public class TicTacToeActivity extends AppCompatActivity {
         mBoardView.setGame(mGame);
         mBoardView.setColor(color);
         mBoardView.setOnTouchListener(mTouchListener);
-        if(savedInstanceState==null){
-            startNewGame();
-        }
+
         updateScore();
         //OLD PROGRESS DIALOG
         progressDialog = new ProgressDialog(this, R.style.LoaderTheme);
@@ -144,16 +143,36 @@ public class TicTacToeActivity extends AppCompatActivity {
         progressDialog.setMessage("Esperando Oponente");
         progressDialog.setCancelable(false);
 
-        //NEW MATERIAL ANIMATION
-        TextView textView = (TextView) findViewById(R.id.loading_text);
-        mCircleDrawable = new Circle();
-        mCircleDrawable.setBounds(0, 0, 100, 100);
-        mCircleDrawable.setColor(Color.parseColor("#0064b4"));
-        textView.setCompoundDrawables(null, null, mCircleDrawable, null);
-        if(!full){
+//        //NEW MATERIAL ANIMATION
+//        TextView textView = (TextView) findViewById(R.id.loading_text);
+//        mCircleDrawable = new Circle();
+//        mCircleDrawable.setBounds(0, 0, 100, 100);
+//        mCircleDrawable.setColor(Color.parseColor("#0064b4"));
+//        textView.setCompoundDrawables(null, null, mCircleDrawable, null);
+        if(!mGame.full){
             progressDialog.show();
         }
+        Log.e("IM", String.valueOf(mGame.iam));
+        Log.e("turn", String.valueOf(mGame.turn));
+        if(String.valueOf(mGame.iam).equals(String.valueOf(mGame.turn))){
+            mInfoTextView.setText(R.string.turn_human);
+            Log.e("turn", String.valueOf(mGame.turn));
+        }else{
+            mInfoTextView.setText("Wait for your opponent move");
+        }
     }
+
+//        if(difficultyLevel.equals(getResources().getString(R.string.difficulty_easy))){
+//            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Easy);
+//        }else if(difficultyLevel.equals(getResources().getString(R.string.difficulty_harder))){
+//            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Harder);
+//        }else{
+//            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Expert);
+//        }
+
+//        human_wins = mPrefs.getInt("human_wins",0);
+//        android_wins = mPrefs.getInt("android_wins",0);
+//        ties = mPrefs.getInt("ties",0);
 
     private void resetScores(){
         ties = 0;
@@ -185,15 +204,15 @@ public class TicTacToeActivity extends AppCompatActivity {
         return false;
     }
 
-    private void androidMove(){
-        int move = mGame.getComputerMove();
-        setMove(TicTacToeGame.COMPUTER_PLAYER, move);
-        int winner = mGame.checkForWinner();
-        if (checkWinner(winner)) {
-            mInfoTextView.setText(R.string.turn_human);
-            turn = TicTacToeGame.HUMAN_PLAYER;
-        }
-    }
+//    private void androidMove(){
+//        int move = mGame.getComputerMove();
+//        setMove(TicTacToeGame.COMPUTER_PLAYER, move);
+//        int winner = mGame.checkForWinner();
+//        if (checkWinner(winner)) {
+//            mInfoTextView.setText(R.string.turn_human);
+//            turn = TicTacToeGame.HUMAN_PLAYER;
+//        }
+//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState){
@@ -217,43 +236,18 @@ public class TicTacToeActivity extends AppCompatActivity {
         mInfoTextView.setText(savedInstanceState.getCharSequence("info"));
         first = savedInstanceState.getChar("first");
         turn = savedInstanceState.getInt("turn");
-        if(turn==mGame.COMPUTER_PLAYER && !mGameOver){
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    androidMove();
-                }
-            }, 2000);
-        }
+//        if(turn==mGame.COMPUTER_PLAYER && !mGameOver){
+//            Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    androidMove();
+//                }
+//            }, 2000);
+//        }
     }
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            try {
-                // Get extra data included in the Intent
-                Log.e(TAG,"t_id"+target_id+" Broadcast"+intent.getExtras().getString("sender_id"));
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.ssss'Z'");
-                String message = intent.getStringExtra("message");
-                Log.e(TAG, "Got message: " + message);
-                User s = db.findUser(Integer.valueOf(intent.getExtras().getString("sender_id")));
-                Log.e(TAG,""+intent.getExtras().getString("sender_id")+s.getFirstname()+intent.getExtras().getString("time_sent"));
-                User r = SessionManager.getInstance(context).getUserDetails();
-                Message new_message = new Message(intent.getExtras().getString("message"),s,r);
-                new_message.setTime(format.parse(intent.getExtras().getString("time_sent")));
-                if(Integer.valueOf(intent.getExtras().getString("sender_id"))==target_id){
-                    mAdapter.addItem(new_message);
-                    Log.e(TAG,"add");
-                }
 
-                db.addMessage(new_message);
-
-            } catch (ParseException e) {
-                Log.e(TAG,e.getLocalizedMessage());
-            }
-        }
-    };
 
     /*@Override
     protected Dialog onCreateDialog(int id){
@@ -340,17 +334,17 @@ public class TicTacToeActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent Data){
         if (requestCode == RESULT_CANCELED){
             mSoundOn = mPrefs.getBoolean("sound",true);
-
-            String difficultyLevel = mPrefs.getString("difficulty_level",
-                    getResources().getString(R.string.difficulty_harder));
-
-            if(difficultyLevel.equals(getResources().getString(R.string.difficulty_easy))){
-                mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Easy);
-            }else if(difficultyLevel.equals(getResources().getString(R.string.difficulty_harder))){
-                mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Harder);
-            }else{
-                mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Expert);
-            }
+//
+//            String difficultyLevel = mPrefs.getString("difficulty_level",
+//                    getResources().getString(R.string.difficulty_harder));
+//
+//            if(difficultyLevel.equals(getResources().getString(R.string.difficulty_easy))){
+//                mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Easy);
+//            }else if(difficultyLevel.equals(getResources().getString(R.string.difficulty_harder))){
+//                mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Harder);
+//            }else{
+//                mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Expert);
+//            }
 
             mBoardView.setColor(mPrefs.getInt("color",0));
             mBoardView.invalidate();
@@ -374,33 +368,33 @@ public class TicTacToeActivity extends AppCompatActivity {
         mGame.clearBoard();
         mBoardView.invalidate();
         mGameOver = false;
-        Random rand = new Random();
-        int n = rand.nextInt(100);
-        if(n < 50){
-            mInfoTextView.setText(R.string.turn_computer);
-            int move = mGame.getComputerMove();
-            setMove(TicTacToeGame.COMPUTER_PLAYER, move);
-            first = 'A';
-        }else{
-            first = 'H';
-        }
+        //Random rand = new Random();
+//        int n = rand.nextInt(100);
+//        if(n < 50){
+//            mInfoTextView.setText(R.string.turn_computer);
+//            int move = mGame.getComputerMove();
+//            setMove(TicTacToeGame.COMPUTER_PLAYER, move);
+//            first = 'A';
+//        }else{
+//            first = 'H';
+//        }
         mInfoTextView.setText(R.string.turn_human);
-        turn = TicTacToeGame.HUMAN_PLAYER;
+        //turn = TicTacToeGame.HUMAN_PLAYER;
     }
 
     private boolean setMove(char player, int location){
-        if(mGame.setMove(player,location)){
-            Log.e("VALID","VALID");
-            if(mSoundOn) {
-                if (player == TicTacToeGame.HUMAN_PLAYER) {
-                    mHumanMediaPlayer.start();
-                } else {
-                    mComputerMediaPLayer.start();
-                }
-            }
-            mBoardView.invalidate();
-            return true;
-        }
+        mGame.setMove(getApplicationContext(), player, location, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
         return false;
     }
 
@@ -408,23 +402,13 @@ public class TicTacToeActivity extends AppCompatActivity {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             Log.e("TOUCH", String.valueOf(turn));
-            if(turn == TicTacToeGame.HUMAN_PLAYER) {
+            if(mGame.turn == Integer.valueOf(mGame.iam)) {
                 int col = (int) event.getX() / mBoardView.getBoardCelWidth();
                 int row = (int) event.getY() / mBoardView.getBoardCelHeight();
                 int pos = row * 3 + col;
-                if (!mGameOver && setMove(TicTacToeGame.HUMAN_PLAYER, pos)) {
-                    int winner = mGame.checkForWinner();
-                    if (checkWinner(winner)) {
-                        mInfoTextView.setText(R.string.turn_computer);
-                        turn = TicTacToeGame.COMPUTER_PLAYER;
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                androidMove();
-                            }
-                        }, 2000);
-                    }
+                if (!mGame.gameOver && setMove(TicTacToeGame.HUMAN_PLAYER, pos)) {
+                    mInfoTextView.setText(R.string.turn_computer);
+
                 }else if(mGameOver){
                     Toast.makeText(getApplicationContext(), "Game already ended!",Toast.LENGTH_SHORT).show();
                 }

@@ -59,7 +59,7 @@ class GameViewSet(viewsets.ModelViewSet):
         game=Game.objects.get(pk=int(request.data['game_id']))
         print(str(game.guest))
         if game.guest == "empty":
-            game.guest = "asd"
+            game.guest = "2"
             game.guest_fcm_token = guest_fcm_token
             game.save()
             serializer = GameSerializer(game, context={'request': request})

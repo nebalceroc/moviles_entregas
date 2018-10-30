@@ -42,9 +42,28 @@ public class MainActivity extends AppCompatActivity {
 
     private GoogleApiClient client;
     private GameListAdapter mAdapter;
-    private String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
     private TicTacToeGame game = null;
 
+    private void refreshGames(){
+        ConnectionManager cm = new ConnectionManager();
+        if (!cm.isNetworkAvailable(getApplicationContext())) {
+            Toast.makeText(getApplicationContext(), "No hay conexion a internet disponible", Toast.LENGTH_LONG).show();
+        } else {
+            GameAPIService game_service = new GameAPIService(getApplicationContext());
+            game_service.get_games(new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response) {
+                    handleJsonResponse(response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    handleVolleryError(error);
+                }
+            });
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +100,30 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(View view, int position) {
                         TextView _id = (TextView) view.findViewById(R.id.serial_text);
                         GameAPIService game_service = new GameAPIService(getApplication());
+                        Log.e(TAG,"AA");
                         game_service.join(Integer.valueOf(_id.getText().toString().trim()), new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
-
+                                try {
+                                    JSONObject json = new JSONObject(response);
+                                    Log.e(TAG,response);
+                                    if(json.has("error_msg")){
+                                        Toast.makeText(getApplicationContext(), "Juego Lleno.", Toast.LENGTH_LONG).show();
+                                        refreshGames();
+                                    }else{
+                                        TicTacToeGame newGame = new TicTacToeGame();
+                                        newGame.setmBoardStateFromStr(json.getString("board"));
+                                        newGame.iam='2';
+                                        newGame.turn=1;
+                                        newGame.id=json.getInt("id");
+                                        newGame.full=true;
+                                        SessionManager.getInstance(getApplicationContext()).setGame(newGame);
+                                        Intent intent = new Intent(getApplicationContext(), TicTacToeActivity.class);
+                                        startActivityForResult(intent, Constants.START_TTT_ACTIVITY_JOIN);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }, new Response.ErrorListener() {
                             @Override
@@ -116,23 +155,7 @@ public class MainActivity extends AppCompatActivity {
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                ConnectionManager cm = new ConnectionManager();
-                if (!cm.isNetworkAvailable(getApplicationContext())) {
-                    Toast.makeText(getApplicationContext(), "No hay conexion a internet disponible", Toast.LENGTH_LONG).show();
-                } else {
-                    GameAPIService game_service = new GameAPIService(getApplicationContext());
-                    game_service.get_games(new Response.Listener<JSONArray>() {
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            handleJsonResponse(response);
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            handleVolleryError(error);
-                        }
-                    });
-                }
+                refreshGames();
             }
         });
 
@@ -148,22 +171,22 @@ public class MainActivity extends AppCompatActivity {
                     game_service.create("", "", "", "", "", new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-//                                    GameAPIService game_service = new GameAPIService(getApplicationContext());
-//                                    game_service.get_games(new Response.Listener<JSONArray>() {
-//                                        @Override
-//                                        public void onResponse(JSONArray response) {
-//                                            handleJsonResponse(response);
-//                                        }
-//                                    }, new Response.ErrorListener() {
-//                                        @Override
-//                                        public void onErrorResponse(VolleyError error) {
-//                                            handleVolleryError(error);
-//                                        }
-//                                    });
                                     Log.e(TAG,response);
-                                    Intent intent = new Intent(getApplicationContext(), TicTacToeActivity.class);
-                                    intent.putExtra("str",response);
-                                    startActivityForResult(intent, Constants.APPOINTMENT_ACTIVITY_REQUEST);
+
+                                    try {
+                                        JSONObject json = new JSONObject(response);
+                                        TicTacToeGame newGame = new TicTacToeGame();
+                                        newGame.setmBoardStateFromStr(json.getString("board"));
+                                        newGame.iam='1';
+                                        newGame.id=json.getInt("id");
+                                        newGame.turn=1;
+                                        SessionManager.getInstance(getApplicationContext()).setGame(newGame);
+                                        Intent intent = new Intent(getApplicationContext(), TicTacToeActivity.class);
+                                        //intent.putExtra("str",response);
+                                        startActivityForResult(intent, Constants.START_TTT_ACTIVITY);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             },
                             new Response.ErrorListener() {
@@ -179,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         game = SessionManager.getInstance(getApplicationContext()).getGame();
         if(game != null){
             Intent intent = new Intent(getApplicationContext(), TicTacToeActivity.class);
-            startActivityForResult(intent, Constants.APPOINTMENT_ACTIVITY_REQUEST);
+            startActivityForResult(intent, Constants.START_TTT_ACTIVITY);
         }
     }
 
