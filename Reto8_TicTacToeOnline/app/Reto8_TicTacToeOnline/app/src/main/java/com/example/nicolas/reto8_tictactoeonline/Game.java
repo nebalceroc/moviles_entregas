@@ -76,7 +76,15 @@ public class Game implements Parcelable {
                     Map<String, String>  params = new HashMap<String, String>();
                     params.put("game_id", String.valueOf(id));
                     params.put("location", String.valueOf(location));
-                    params.put("player", String.valueOf(player));
+                    String s = String.valueOf(player);
+                    switch(player){
+                        case '1':
+                            params.put("player", "H");
+                            break;
+                        case '2':
+                            params.put("player", "G");
+                            break;
+                    }
                     return params;
                 }
             };

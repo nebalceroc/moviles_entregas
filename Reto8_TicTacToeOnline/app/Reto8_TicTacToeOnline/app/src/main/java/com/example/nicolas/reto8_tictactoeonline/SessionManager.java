@@ -53,21 +53,17 @@ public class SessionManager {
     }
 
     public TicTacToeGame getGame(){
-        Log.e("GAME","GET");
         boolean ingame = pref.getBoolean(KEY_INGAME, false);
         if(ingame){
             TicTacToeGame game = new TicTacToeGame();
             game.id = pref.getInt(KEY_ID,-1);
             game.iam = pref.getString(KEY_PLAYER,"_").charAt(0);
-            Log.e("ASD",pref.getString(KEY_BOARD,"EEEEEEEEE"));
-            Log.e("ASD",pref.getString(KEY_BOARD,"EEEEEEEEE"));
             game.setmBoardStateFromStr(pref.getString(KEY_BOARD,"EEEEEEEEE"));
             game.turn = pref.getInt(KEY_TURN,1);
             game.gameOver = pref.getBoolean(KEY_GO,false);
             game.full = pref.getBoolean(KEY_FULL,false);
             return game;
         }else{
-            Log.e("ASD","aSADaq");
             return null;
         }
 

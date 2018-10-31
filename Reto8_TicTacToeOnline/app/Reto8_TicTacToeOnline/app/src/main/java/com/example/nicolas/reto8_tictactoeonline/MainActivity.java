@@ -66,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        game = SessionManager.getInstance(getApplicationContext()).getGame();
+        if(game != null){
+            Intent intent = new Intent(getApplicationContext(), TicTacToeActivity.class);
+            startActivityForResult(intent, Constants.START_TTT_ACTIVITY);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -101,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                         TextView _id = (TextView) view.findViewById(R.id.serial_text);
                         GameAPIService game_service = new GameAPIService(getApplication());
                         Log.e(TAG,"AA");
-                        game_service.join(Integer.valueOf(_id.getText().toString().trim()), new Response.Listener<String>() {
+                        game_service.join(Integer.valueOf(_id.getText().toString().substring(4).trim()), new Response.Listener<String>() {
                             @Override
                             public void onResponse(String response) {
                                 try {
@@ -114,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                                         TicTacToeGame newGame = new TicTacToeGame();
                                         newGame.setmBoardStateFromStr(json.getString("board"));
                                         newGame.iam='2';
-                                        newGame.turn=1;
+                                        newGame.turn=json.getInt("turn");
                                         newGame.id=json.getInt("id");
                                         newGame.full=true;
                                         SessionManager.getInstance(getApplicationContext()).setGame(newGame);
@@ -179,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
                                         newGame.setmBoardStateFromStr(json.getString("board"));
                                         newGame.iam='1';
                                         newGame.id=json.getInt("id");
-                                        newGame.turn=1;
+                                        newGame.turn=json.getInt("turn");
                                         SessionManager.getInstance(getApplicationContext()).setGame(newGame);
                                         Intent intent = new Intent(getApplicationContext(), TicTacToeActivity.class);
                                         //intent.putExtra("str",response);

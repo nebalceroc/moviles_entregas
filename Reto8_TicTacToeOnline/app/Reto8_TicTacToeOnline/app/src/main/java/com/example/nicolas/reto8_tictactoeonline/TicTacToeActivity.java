@@ -84,11 +84,19 @@ public class TicTacToeActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String kind = intent.getStringExtra("kind");
+            Log.e("KIND",kind);
             switch (kind){
                 case "join":
                     progressDialog.hide();
                     mGame.full=true;
                     SessionManager.getInstance(context).setGame(mGame);
+                    break;
+                case "action":
+                    Log.e("SSSSS",intent.getStringExtra("board"));
+                    mGame.setmBoardStateFromStr(intent.getStringExtra("board"));
+                    mGame.turn=Integer.valueOf(intent.getStringExtra("turn"));
+                    SessionManager.getInstance(context).setGame(mGame);
+                    refreshBoard();
                     break;
             }
         }
@@ -107,7 +115,7 @@ public class TicTacToeActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter(Constants.JOIN_GAME_NOTIFICATION));
 
-        mGame = SessionManager.getInstance(getApplicationContext()).getGame();
+        mGame = SessionManager.getInstance(this).getGame();
         if(mGame==null){
             startNewGame();
             mGame = new TicTacToeGame();
@@ -115,7 +123,7 @@ public class TicTacToeActivity extends AppCompatActivity {
             turn = (int) mGame.turn;
             SessionManager.getInstance(this).setGame(mGame);
         }
-        color = mPrefs.getInt("color",0);
+        color = mPrefs.getInt("color",Color.BLACK);
         //d = mPrefs.getInt("mdif",1);
 
         //ties = mPrefs.getInt("ties",0);
@@ -131,6 +139,7 @@ public class TicTacToeActivity extends AppCompatActivity {
         //mGame.setmIntDifficultyLevel(d);
 
         mBoardView = (BoardView) findViewById(R.id.board);
+        Log.e("ONCREATE",mGame.getBoardStr());
         mBoardView.setGame(mGame);
         mBoardView.setColor(color);
         mBoardView.setOnTouchListener(mTouchListener);
@@ -152,14 +161,19 @@ public class TicTacToeActivity extends AppCompatActivity {
         if(!mGame.full){
             progressDialog.show();
         }
-        Log.e("IM", String.valueOf(mGame.iam));
-        Log.e("turn", String.valueOf(mGame.turn));
+        //Log.e("IM", String.valueOf(mGame.iam));
+        //Log.e("turn", String.valueOf(mGame.turn));
         if(String.valueOf(mGame.iam).equals(String.valueOf(mGame.turn))){
             mInfoTextView.setText(R.string.turn_human);
-            Log.e("turn", String.valueOf(mGame.turn));
+            //Log.e("turn", String.valueOf(mGame.turn));
         }else{
             mInfoTextView.setText("Wait for your opponent move");
         }
+
+        human_wins = mPrefs.getInt("human_wins",0);
+        android_wins = mPrefs.getInt("android_wins",0);
+        ties = mPrefs.getInt("ties",0);
+        mBoardView.invalidate();
     }
 
 //        if(difficultyLevel.equals(getResources().getString(R.string.difficulty_easy))){
@@ -170,9 +184,7 @@ public class TicTacToeActivity extends AppCompatActivity {
 //            mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Expert);
 //        }
 
-//        human_wins = mPrefs.getInt("human_wins",0);
-//        android_wins = mPrefs.getInt("android_wins",0);
-//        ties = mPrefs.getInt("ties",0);
+
 
     private void resetScores(){
         ties = 0;
@@ -189,39 +201,46 @@ public class TicTacToeActivity extends AppCompatActivity {
             mGameOver = true;
             ties += 1;
             updateScore();
-        } else if (winner == 2) {
-            String defaultMessage = getResources().getString(R.string.result_human_wins);
-            mInfoTextView.setText(mPrefs.getString("victory_message", defaultMessage));
-            mGameOver = true;
-            human_wins += 1;
-            updateScore();
         } else {
-            mInfoTextView.setText(R.string.result_android_wins);
-            mGameOver = true;
-            android_wins += 1;
+            String defaultMessage = getResources().getString(R.string.result_human_wins);
+            Log.e("WINNER", String.valueOf(winner));
+            if(winner==3){
+                if(mGame.iam=='1'){
+                    mInfoTextView.setText(mPrefs.getString("victory_message", defaultMessage));
+                    mGameOver = true;
+                    human_wins += 1;
+                }else{
+                    mInfoTextView.setText("Your opponent won!");
+                    mGameOver = true;
+                    android_wins += 1;
+                }
+            }
+            if(winner==2){
+                if(mGame.iam=='1'){
+                    mInfoTextView.setText("Your opponent won!");
+                    mGameOver = true;
+                    android_wins += 1;
+                }else{
+                    mInfoTextView.setText(mPrefs.getString("victory_message", defaultMessage));
+                    mGameOver = true;
+                    human_wins += 1;
+                }
+            }
             updateScore();
         }
+        SessionManager.getInstance(this).clearGame();
         return false;
     }
 
-//    private void androidMove(){
-//        int move = mGame.getComputerMove();
-//        setMove(TicTacToeGame.COMPUTER_PLAYER, move);
-//        int winner = mGame.checkForWinner();
-//        if (checkWinner(winner)) {
-//            mInfoTextView.setText(R.string.turn_human);
-//            turn = TicTacToeGame.HUMAN_PLAYER;
-//        }
-//    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putCharArray("board", mGame.getBoardState());
         outState.putBoolean("mGameOver",mGameOver);
-        //outState.putInt("human_wins",human_wins);
-        //outState.putInt("android_wins",android_wins);
-        //outState.putInt("ties",ties);
+        outState.putInt("human_wins",human_wins);
+        outState.putInt("android_wins",android_wins);
+        outState.putInt("ties",ties);
         outState.putCharSequence("info", mInfoTextView.getText());
         outState.putChar("first",first);
         outState.putInt("turn",turn);
@@ -249,64 +268,9 @@ public class TicTacToeActivity extends AppCompatActivity {
 
 
 
-    /*@Override
-    protected Dialog onCreateDialog(int id){
-        Dialog dialog = null;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        switch(id){
-            case DIALOG_DIFFICULTY_ID:
-                builder.setTitle(R.string.difficulty_choose);
 
-                final CharSequence[] levels = {
-                        getResources().getString(R.string.difficulty_easy),
-                        getResources().getString(R.string.difficulty_harder),
-                        getResources().getString(R.string.difficulty_expert)};
-
-                Log.e("D create",String.valueOf(d));
-                builder.setSingleChoiceItems(levels, mGame.getmDifficultyLevel().ordinal(),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int item) {
-                                dialog.dismiss();
-                                //mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.valueOf(String.valueOf(levels[item])));
-                                mGame.setmIntDifficultyLevel(item);
-                                SharedPreferences.Editor ed = mPrefs.edit();
-                                ed.putInt("mdif",item);
-                                ed.apply();
-                                d=item;
-                                Log.e("D set",String.valueOf(item));
-                                Toast.makeText(getApplicationContext(), levels[item],Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                dialog = builder.create();
-                break;
-            case DIALOG_QUIT_ID:
-                builder.setMessage(R.string.quit_question)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                TicTacToeActivity.this.finish();
-
-                            }
-                        })
-                        .setNegativeButton(R.string.no, null);
-                dialog = builder.create();
-                break;
-            case DIALOG_ABOUT_ID:
-                Context context = getApplicationContext();
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-                View layout = inflater.inflate(R.layout.about_dialog,null);
-                builder.setView(layout);
-                builder.setPositiveButton("Ok",null);
-                dialog = builder.create();
-                break;
-        }
-        return dialog;
-    }
-*/
     private void updateScore(){
-        mScoreTextView.setText("Score H:"+String.valueOf(human_wins)+" T:"+String.valueOf(ties)+" A:"+String.valueOf(android_wins));
+        mScoreTextView.setText("Score W:"+String.valueOf(human_wins)+" T:"+String.valueOf(ties)+" L:"+String.valueOf(android_wins));
     }
 
     @Override
@@ -334,17 +298,6 @@ public class TicTacToeActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent Data){
         if (requestCode == RESULT_CANCELED){
             mSoundOn = mPrefs.getBoolean("sound",true);
-//
-//            String difficultyLevel = mPrefs.getString("difficulty_level",
-//                    getResources().getString(R.string.difficulty_harder));
-//
-//            if(difficultyLevel.equals(getResources().getString(R.string.difficulty_easy))){
-//                mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Easy);
-//            }else if(difficultyLevel.equals(getResources().getString(R.string.difficulty_harder))){
-//                mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Harder);
-//            }else{
-//                mGame.setmDifficultyLevel(TicTacToeGame.DifficultyLevel.Expert);
-//            }
 
             mBoardView.setColor(mPrefs.getInt("color",0));
             mBoardView.invalidate();
@@ -382,11 +335,38 @@ public class TicTacToeActivity extends AppCompatActivity {
         //turn = TicTacToeGame.HUMAN_PLAYER;
     }
 
-    private boolean setMove(char player, int location){
+    private void refreshBoard(){
+        mBoardView.invalidate();
+        if(String.valueOf(mGame.iam).equals(String.valueOf(mGame.turn))){
+            mInfoTextView.setText(R.string.turn_human);
+        }else{
+            mInfoTextView.setText("Wait for your opponent move");
+        }
+        int winner = mGame.checkForWinner();
+        checkWinner(winner);
+    }
+
+    private void setMove(char player, int location){
         mGame.setMove(getApplicationContext(), player, location, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            Log.e("TTA",response);
+                            if(json.has("error_msg")){
+                                Toast.makeText(getApplicationContext(), "Movimiento Invalido.", Toast.LENGTH_LONG).show();
+                            }else{
+                                TicTacToeGame umGame = SessionManager.getInstance(getApplicationContext()).getGame();
+                                umGame.setmBoardStateFromStr(json.getString("board"));
+                                umGame.turn=json.getInt("turn");
+                                mGame.setmBoardStateFromStr(json.getString("board"));
+                                mGame.turn=json.getInt("turn");
+                                SessionManager.getInstance(getApplicationContext()).setGame(umGame);
+                                refreshBoard();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -395,23 +375,28 @@ public class TicTacToeActivity extends AppCompatActivity {
 
                     }
                 });
-        return false;
     }
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             Log.e("TOUCH", String.valueOf(turn));
-            if(mGame.turn == Integer.valueOf(mGame.iam)) {
+            if(String.valueOf(mGame.iam).equals(String.valueOf(mGame.turn))) {
                 int col = (int) event.getX() / mBoardView.getBoardCelWidth();
                 int row = (int) event.getY() / mBoardView.getBoardCelHeight();
                 int pos = row * 3 + col;
-                if (!mGame.gameOver && setMove(TicTacToeGame.HUMAN_PLAYER, pos)) {
-                    mInfoTextView.setText(R.string.turn_computer);
-
-                }else if(mGameOver){
-                    Toast.makeText(getApplicationContext(), "Game already ended!",Toast.LENGTH_SHORT).show();
+                if(!mGameOver){
+                    setMove(mGame.iam, pos);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Game Over!",Toast.LENGTH_SHORT).show();
                 }
+
+//                if (!mGame.gameOver && ) {
+//                    mInfoTextView.setText(R.string.turn_computer);
+//
+//                }else if(mGameOver){
+//                    Toast.makeText(getApplicationContext(), "Game already ended!",Toast.LENGTH_SHORT).show();
+//                }
             }else{
                 Toast.makeText(getApplicationContext(), "Not your turn!",Toast.LENGTH_SHORT).show();
             }

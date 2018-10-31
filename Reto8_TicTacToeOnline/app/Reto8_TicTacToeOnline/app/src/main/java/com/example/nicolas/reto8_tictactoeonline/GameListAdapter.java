@@ -89,9 +89,13 @@ class GameListAdapter extends RecyclerView.Adapter<GameListAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         TextView text = (TextView) viewHolder.mView.findViewById(R.id.serial_text);
-        text.setText(String.valueOf(mDataset.get(i).getId()));
+        text.setText("ID: "+String.valueOf(mDataset.get(i).getId()));
         text = (TextView) viewHolder.mView.findViewById(R.id.target_id);
-        text.setText(String.valueOf(mDataset.get(i).getHost()));
+        int players =2;
+        if(mDataset.get(i).getGuest().equals("empty")){
+            players--;
+        }
+        text.setText(String.valueOf(players)+"/2");
     }
 
     @Override

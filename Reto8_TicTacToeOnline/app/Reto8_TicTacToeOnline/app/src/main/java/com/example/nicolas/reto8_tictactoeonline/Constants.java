@@ -29,7 +29,7 @@ public class Constants {
     public static final int LOGOUT = -1;
     public static final int LOGIN_REQUEST = 0;
     public static final int USER_JOINED = 1;
-    public static final int LOGIN_ERROR = 2;
+    public static final int USER_MOVED = 2;
     public static final int START_TTT_ACTIVITY = 3;
     public static final int START_TTT_ACTIVITY_JOIN = 4;
     public static final int USER_REGISTER_ERROR = 5;
