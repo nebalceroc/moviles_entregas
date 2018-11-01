@@ -12,8 +12,9 @@ public class Constants {
     public static Boolean isStopped;
     public static RequestSingleton mRequestQueue;
 
-    public static final String API_URL = "http://192.168.0.8:8085/";
-    public static final String API_TEST_URL = "http://162.208.9.185:8085/api/";
+    //public static final String API_URL = "http://192.168.0.8:8085/";
+    public static final String API_URL = "http://104.248.60.180:8085/";
+    public static final String API_TEST_URL = "http://104.248.60.180:8085/api/";
 
     //public static final String API_URL = "http://192.168.1.104:8081/";
     //public static final String API_TEST_URL = "http://192.168.1.104:8081/api_test/";

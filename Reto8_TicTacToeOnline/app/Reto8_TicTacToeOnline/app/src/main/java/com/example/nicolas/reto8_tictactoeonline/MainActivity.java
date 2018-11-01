@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), TicTacToeActivity.class);
             startActivityForResult(intent, Constants.START_TTT_ACTIVITY);
         }
+        refreshGames();
     }
 
     @Override
