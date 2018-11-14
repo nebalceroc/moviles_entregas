@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Reto9_SQLite</string>
+    <string name="title_activity_add_update_employee">AddUpdateEmpresa</string>
+    <string name="new_employee">New Empresa</string>
+    <string name="choose_menu">Choose a Menu Option</string>
+    <string name="view_all_employees">View All Empresas</string>
+    <string name="remove_employee">Remove Empresa</string>
+    <string name="update_employee">Update Empresa</string>
+    <string name="add_employee">Add Empresa</string>
+    <string name="gender">Tipo</string>
+    <string name="add_last_name">Url</string>
+    <string name="add_first_name">Name</string>
+    <string name="number">Number</string>
+    <string name="string_c">Consultor</string>
+    <string name="string_m">A la Medida</string>
+    <string name="string_f">Fabrica</string>
+    <string name="add_date">Email</string>
+    <string name="add_dept">P y S</string>
+    <string name="enter_employee_id">Enter Your Empresa Id</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_view_all_employees">ViewAllEmpresas</string>
+</resources>
