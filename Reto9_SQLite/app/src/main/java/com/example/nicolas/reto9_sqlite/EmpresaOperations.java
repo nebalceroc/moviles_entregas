@@ -73,6 +73,49 @@ public class EmpresaOperations {
         return e;
     }
 
+    public List<Empresa> getFilteredEmpresas(String filtro) {
+        Cursor cursor = database.query(EmpresaDBHandler.TABLE_EMPRESA,allColumns,null,null,null, null, null);
+        List<Empresa> empresas = new ArrayList<>();
+        if(cursor.getCount() > 0){
+            while(cursor.moveToNext()){
+                Empresa empresa = new Empresa();
+                empresa.setEmpId(cursor.getLong(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_ID)));
+                empresa.setName(cursor.getString(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_NAME)));
+                empresa.setUrl(cursor.getString(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_URL)));
+                empresa.setNumber(cursor.getString(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_NUMBER)));
+                empresa.setEmail(cursor.getString(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_EMAIL)));
+                empresa.setPys(cursor.getString(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_PYS)));
+                Log.e("ASD1", String.valueOf(cursor.getInt(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_C))));
+                Log.e("ASD2", String.valueOf(cursor.getInt(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_M))));
+                Log.e("ASD3", String.valueOf(cursor.getInt(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_F))));
+                empresa.setC("1".equals(String.valueOf(cursor.getInt(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_C)))));
+                empresa.setM("1".equals(String.valueOf(cursor.getInt(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_M)))));
+                empresa.setF("1".equals(String.valueOf(cursor.getInt(cursor.getColumnIndex(EmpresaDBHandler.COLUMN_F)))));
+                boolean f;
+                switch (filtro){
+                    case "C":
+                        if(empresa.getC()){
+                            empresas.add(empresa);
+                        }
+                        break;
+                    case "M":
+                        if(empresa.getM()){
+                            empresas.add(empresa);
+                        }
+                        break;
+                    case "F":
+                        if(empresa.getF()){
+                            empresas.add(empresa);
+                        }
+                        break;
+                }
+
+            }
+        }
+        // return All Employees
+        return empresas;
+    }
+
     public List<Empresa> getAllEmpresas() {
         Cursor cursor = database.query(EmpresaDBHandler.TABLE_EMPRESA,allColumns,null,null,null, null, null);
         List<Empresa> empresas = new ArrayList<>();
